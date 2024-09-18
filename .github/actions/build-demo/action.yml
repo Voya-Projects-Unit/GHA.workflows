@@ -3,7 +3,6 @@ description: "blank composite action"
 runs:
   using: "composite"
     steps:
-      - uses: actions/checkout@v4
       - name: Run a one-line script
         run: echo Hello, world composite action!
       - name: Run a multi-line script
