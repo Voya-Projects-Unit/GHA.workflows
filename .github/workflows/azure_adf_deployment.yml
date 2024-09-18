@@ -15,6 +15,7 @@ jobs:
 
   azure_adf_login:
     runs-on: ubuntu-latest
+    needs: azure_adf_precopy
     steps:
       - uses: actions/checkout@v4
       - name: Run a one-line script
@@ -26,6 +27,7 @@ jobs:
 
   azure_adf_stop_triggers:
     runs-on: ubuntu-latest
+    needs: azure_adf_login    
     steps:
       - uses: actions/checkout@v4
       - name: Run a one-line script
@@ -37,6 +39,7 @@ jobs:
 
   azure_adf_dry_run:
     runs-on: ubuntu-latest
+    needs: azure_adf_stop_triggers    
     steps:
       - uses: actions/checkout@v4
       - name: Run a one-line script
@@ -48,6 +51,7 @@ jobs:
 
   azure_adf_arm_update:
     runs-on: ubuntu-latest
+    needs: azure_adf_dry_run    
     steps:
       - uses: actions/checkout@v4
       - name: Run a one-line script
@@ -59,6 +63,7 @@ jobs:
 
   azue_adf_start_triggers:
     runs-on: ubuntu-latest
+    needs: azure_adf_arm_update    
     steps:
       - uses: actions/checkout@v4
       - name: Run a one-line script
@@ -70,6 +75,7 @@ jobs:
 
   azure_adf_post_validation:
     runs-on: ubuntu-latest
+    needs: azue_adf_start_triggers    
     steps:
       - uses: actions/checkout@v4
       - name: Run a one-line script
@@ -81,6 +87,7 @@ jobs:
 
   azure_adf_logout:
     runs-on: ubuntu-latest
+    needs: azure_adf_post_validation    
     steps:
       - uses: actions/checkout@v4
       - name: Run a one-line script
