@@ -1,0 +1,23 @@
+name: Deployment
+
+on:
+ workflow_dispatch:
+   # Inputs the workflow accepts.
+   inputs:
+     version:
+       description: 'Package version to deployed'
+       required: true
+       type: choice
+       options:
+         - $BUILD_PACKAGE_VERSIONS
+     environment:
+       description: 'Target Environment'
+       required: true
+       type: choice
+       options:
+         - DEV
+         - PROD
+jobs:
+ deployment:
+   runs-on: ubuntu-latest
+   name: "Deploying on : ${{ inputs.environment }} 🌍"
