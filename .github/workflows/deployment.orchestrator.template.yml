@@ -1,0 +1,34 @@
+#https://stackoverflow.com/questions/67107607/github-actions-pass-data-from-workflow-to-another-workflow
+name: APP-NAME-GOES-HERE
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+
+on:
+  repository_dispatch:
+    types: [cf-b2bnavigation-service-event] 
+  workflow_dispatch:
+    inputs:
+      deployment-region:
+        description: 'Deployment region'
+        required: false
+        default: 'cf-b2b-navigation-service-azure_intg' 
+jobs:
+  env-setup:
+    name: Setup Dynamic Environment Variables
+    runs-on: ubuntu-latest
+    outputs:
+      deployment-region: ${{ steps.set-output-defaults.outputs.deployment-region }}
+    steps:
+      - name: set outputs with default values
+        id: set-output-defaults
+        run: |    
+          # If workflow_dispatch, use inputs (left), if other trigger, use default env (right)
+          echo "value is ${{ github.event.inputs.deployment-region }}"
+          echo "value is from event ${{ github.event.client_payload.deployment-region }}"
+          echo "::set-output name=deployment-region::${{ github.event.inputs.deployment-region || github.event.client_payload.deployment-region }}"  
+  deloy-job:
+    needs: env-setup
+    name: cf-b2b-navigation-service azure data factory intg deployment
+    uses: Voya-Projects-Unit/GHA.workflows/.github/workflows/azure_adf_deployment.yml@main
+    with:
+      deployment-region: ${{needs.env-setup.outputs.deployment-region}}
+      
