@@ -4,7 +4,12 @@ on:
     inputs:
       deployment-region:
         required: true
-        type: string  
+        type: string 
+        description: "deployment region parameter"        
+      build-number:
+        type: string
+        required: true
+        description: "build number paramter"        
 jobs:
   azure_adf_precopy:
     runs-on: ubuntu-latest
