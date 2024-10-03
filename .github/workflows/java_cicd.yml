@@ -1,6 +1,9 @@
 name: CI
 on:
   workflow_call:
+    secrets:
+      pat-token:
+        required: true
 jobs:
   checkout:
     runs-on: ubuntu-latest
@@ -120,4 +123,4 @@ jobs:
       with:
         build-to-deploy: ${{ env.BUILD_NUMBER }}
         deploy-trigger-region: unit
-        pat-token: ${{ secrets.TARGET_REPO_PAT }}          
+        pat-token: ${{ secrets.pat-token }}          
