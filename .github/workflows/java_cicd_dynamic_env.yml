@@ -121,14 +121,46 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-  Trigger_Unit_Deploy:
-    needs: artifacts-publish
+  get-environments:
     runs-on: ubuntu-latest
+    needs: artifacts-publish
+    outputs:
+      names: ${{ steps.set_env.outputs.names }}
     steps:
-    - name: ${{ github.repository }}-${{ github.ref }} app deploy
-      uses: Voya-Projects-Unit/GHA.workflows/trigger-deploy@main
-      with:
-        app-to-deploy: ${{ inputs.app-to-build }}
-        build-to-deploy: ${{ inputs.build-number }}
-        deploy-trigger-region: unit
-        pat-token: ${{ secrets.pat-token }}          
+      - name: Get Environments
+        uses: octokit/request-action@v2.3.0
+        id: get_env
+        with:
+         route: GET /repos/${{ inputs.app-to-build }}/environments?per_page=100 # If we ever have >100 deployments, we'll need to paginate
+        env:
+          GITHUB_TOKEN: ${{ secrets.pat-token }}
+      - name: Set output
+        id: set_env
+        # run: echo "names=$(echo $NAMES | jq -c '[.[] | select(startswith("[${{ github.ref_name }}]"))]' -j)" >> $GITHUB_OUTPUT
+        env:
+          NAMES: ${{ toJson(fromJson(steps.get_env.outputs.data).environments.*.name) }}
+        run: |
+          # use heredoc with random delimiter for multiline JSON
+          delimiter="$(tr -dc A-Za-z0-9 </dev/urandom | head -c 20)"
+          echo "names<<$delimiter
+          $NAMES
+          $delimiter" >> "$GITHUB_OUTPUT"
+  print-environments:
+    runs-on: ubuntu-latest
+    needs: get-environments
+    steps: 
+      - id: print_env
+        name: Print Environments
+        run: |
+          echo ${{ needs.get-environments.outputs.names }}
+  # Trigger_Unit_Deploy:
+  #   needs: artifacts-publish
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: ${{ github.repository }}-${{ github.ref }} app deploy
+  #     uses: Voya-Projects-Unit/GHA.workflows/trigger-deploy@main
+  #     with:
+  #       app-to-deploy: ${{ inputs.app-to-build }}
+  #       build-to-deploy: ${{ inputs.build-number }}
+  #       deploy-trigger-region: unit
+  #       pat-token: ${{ secrets.pat-token }}          
