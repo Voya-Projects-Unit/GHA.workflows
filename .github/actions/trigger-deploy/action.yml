@@ -1,0 +1,41 @@
+name: 'deploy trigger action'
+description: 'deploy trigger action'
+inputs:
+  build-to-deploy:
+    description: 'Build to Deploy'
+    required: true
+  deploy-trigger-region:
+    description: 'Deploy trigger Region'
+    required: true
+# outputs:
+#   deploy-status:
+#     description: 'Deploy status'
+#     value: ${{ steps.trigger-deploy.outputs.deploy-status }}
+runs: 
+  using: "composite"
+    steps:
+    - name: ${{ github.repository }}-${{ github.ref }} app deploy
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          $ErrorActionPreference = "Stop"          
+          
+          $headers = @{
+            "Accept" = "application/vnd.github+json";
+            "Authorization" = "Bearer ${{ secrets.TARGET_REPO_PAT }}";
+            "X-GitHub-Api-Version" = "2022-11-28";
+          }
+
+          $resp = Invoke-WebRequest -Method Post `
+            -Headers $headers `
+            -Uri "https://api.github.com/repos/Voya-Projects-Unit/poc_iteration_3/actions/workflows/${{ inputs.deploy-trigger-region }}_workflow.yml/dispatches" `
+            -Body '{"ref":"main","inputs":{"build-number": "${{ inputs.build-to-deploy }}" }}'
+
+          if($resp.StatusCode -eq 204) {
+            "Worflow successfully triggered"
+          }
+
+          else {        
+            throw "Expected http 204 response code. Received: " + $resp.StatusCode
+          } 
