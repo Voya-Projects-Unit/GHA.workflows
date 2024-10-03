@@ -1,0 +1,134 @@
+name: CI
+on:
+  workflow_call:
+    inputs:
+      app-to-build:
+        type: string
+        required: true
+      build-number:
+        type: string
+        required: true
+    secrets:
+      pat-token:
+        required: true
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run a one-line script
+        run: echo Hello, world!
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+  # synkcodescan:
+  #   runs-on: ubuntu-latest
+  #   needs: checkout
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.
+  # gitleaks:
+  #   runs-on: ubuntu-latest
+  #   needs: synkcodescan    
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.
+  # snykscascan:
+  #   runs-on: ubuntu-latest
+  #   needs: gitleaks    
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.
+  # mavenbuild:
+  #   runs-on: ubuntu-latest
+  #   needs: snykscascan    
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.          
+  # unittest:
+  #   runs-on: ubuntu-latest
+  #   needs: mavenbuild    
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.   
+  # testcoveragereport:
+  #   runs-on: ubuntu-latest
+  #   needs: unittest    
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.   
+  # sonarqube:
+  #   runs-on: ubuntu-latest
+  #   needs: testcoveragereport    
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.  
+  # sonar-qualitygate:
+  #   runs-on: ubuntu-latest
+  #   needs: sonarqube    
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.           
+  artifacts-publish:
+    runs-on: ubuntu-latest
+    needs: checkout    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run a one-line script
+        run: echo "Hello, world!  ${{ secrets.pat-token }} "
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+  Trigger_Unit_Deploy:
+    needs: artifacts-publish
+    runs-on: ubuntu-latest
+    steps:
+    - name: ${{ github.repository }}-${{ github.ref }} app deploy
+      uses: Voya-Projects-Unit/GHA.workflows/trigger-deploy@main
+      with:
+        app-to-deploy: ${{ inputs.app-to-build }}
+        build-to-deploy: ${{ inputs.build-number }}
+        deploy-trigger-region: unit
+        pat-token: ${{ secrets.pat-token }}          
