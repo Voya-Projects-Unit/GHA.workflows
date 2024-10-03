@@ -33,7 +33,7 @@ runs:
 
           $resp = Invoke-WebRequest -Method Post `
             -Headers $headers `
-            -Uri "https://api.github.com/repos/Voya-Projects-Unit/poc_iteration_3/actions/workflows/${{ inputs.deploy-trigger-region }}_workflow.yml/dispatches" `
+            -Uri "https://api.github.com/repos/Voya-Projects-Unit/poc_iteration_4/actions/workflows/${{ inputs.deploy-trigger-region }}_workflow.yml/dispatches" `
             -Body '{"ref":"main","inputs":{"build-number": "${{ inputs.build-to-deploy }}" }}'
 
           if($resp.StatusCode -eq 204) {
