@@ -152,7 +152,7 @@ jobs:
       - id: print_env
         name: Print Environments
         run: |
-          echo ${{ needs.get-environments.outputs.names }}
+          echo "${{ needs.get-environments.outputs.names }}"
   # Trigger_Unit_Deploy:
   #   needs: artifacts-publish
   #   runs-on: ubuntu-latest
