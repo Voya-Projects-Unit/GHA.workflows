@@ -2,6 +2,9 @@ name: CI
 on:
   workflow_call:
     inputs:
+      app-to-build:
+        type: string
+        required: true
       build-number:
         type: string
         required: true
@@ -125,6 +128,7 @@ jobs:
     - name: ${{ github.repository }}-${{ github.ref }} app deploy
       uses: Voya-Projects-Unit/GHA.workflows/trigger-deploy@main
       with:
+        app-to-deploy: ${{ inputs.app-to-build }}
         build-to-deploy: ${{ inputs.build-number }}
         deploy-trigger-region: unit
         pat-token: ${{ secrets.pat-token }}          
