@@ -7,7 +7,7 @@ inputs:
   deploy-trigger-region:
     description: 'Deploy trigger Region'
     required: true
-  pat_token:
+  pat-token:
     description: 'Service id Token'
     required: true
 
@@ -27,7 +27,7 @@ runs:
           
           $headers = @{
             "Accept" = "application/vnd.github+json";
-            "Authorization" = "Bearer ${{ inputs.pat_token }}";
+            "Authorization" = "Bearer ${{ inputs.pat-token }}";
             "X-GitHub-Api-Version" = "2022-11-28";
           }
 
