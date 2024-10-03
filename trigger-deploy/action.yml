@@ -37,7 +37,7 @@ runs:
           $resp = Invoke-WebRequest -Method Post `
             -Headers $headers `
             -Uri "https://api.github.com/repos/Voya-Projects-Unit/${{ inputs.app-to-deploy }}/actions/workflows/${{ inputs.deploy-trigger-region }}_workflow.yml/dispatches" `
-            -Body '{"ref":"main","inputs":{"build-number": "${{ inputs.build-to-deploy }}" }}'
+            -Body '{"ref":"main","inputs":{"build-number": "${{ inputs.build-to-deploy }}" , "app-to-deploy" : "${{ inputs.app-to-deploy }}"}}'
 
           if($resp.StatusCode -eq 204) {
             "Worflow successfully triggered"
