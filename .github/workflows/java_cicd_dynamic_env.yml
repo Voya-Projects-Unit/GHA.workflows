@@ -152,7 +152,7 @@ jobs:
       - id: print_env
         name: Print Environments
         run: |
-          for env in ${{ needs.get-environments.outputs.names }};
+          for env in ${{ fromJson(needs.get-environments.outputs.names) }};
            do
              echo " $env "
            done
