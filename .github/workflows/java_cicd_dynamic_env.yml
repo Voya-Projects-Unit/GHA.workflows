@@ -152,7 +152,10 @@ jobs:
       - id: print_env
         name: Print Environments
         run: |
-          echo "${{ needs.get-environments.outputs.names }}"
+          for env in {{ needs.get-environments.outputs.names }};
+           do
+             echo "env = $env"
+           done
   # Trigger_Unit_Deploy:
   #   needs: artifacts-publish
   #   runs-on: ubuntu-latest
