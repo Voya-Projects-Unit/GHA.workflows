@@ -1,6 +1,9 @@
 name: 'deploy trigger action'
 description: 'deploy trigger action'
 inputs:
+  app-to-deploy:
+    description: 'Application to Deploy'
+    required: true
   build-to-deploy:
     description: 'Build to Deploy'
     required: true
@@ -33,7 +36,7 @@ runs:
 
           $resp = Invoke-WebRequest -Method Post `
             -Headers $headers `
-            -Uri "https://api.github.com/repos/Voya-Projects-Unit/poc_iteration_5/actions/workflows/${{ inputs.deploy-trigger-region }}_workflow.yml/dispatches" `
+            -Uri "https://api.github.com/repos/Voya-Projects-Unit/${{ inputs.app-to-deploy }}/actions/workflows/${{ inputs.deploy-trigger-region }}_workflow.yml/dispatches" `
             -Body '{"ref":"main","inputs":{"build-number": "${{ inputs.build-to-deploy }}" }}'
 
           if($resp.StatusCode -eq 204) {
