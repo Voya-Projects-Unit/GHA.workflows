@@ -154,7 +154,7 @@ jobs:
         run: |
           for env in ${{ needs.get-environments.outputs.names }};
            do
-             echo "env = $env"
+             echo " $env "
            done
   # Trigger_Unit_Deploy:
   #   needs: artifacts-publish
