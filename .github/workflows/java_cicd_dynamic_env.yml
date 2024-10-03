@@ -131,7 +131,7 @@ jobs:
         uses: octokit/request-action@v2.3.0
         id: get_env
         with:
-         route: GET /repos/${{ inputs.app-to-build }}/environments?per_page=100 # If we ever have >100 deployments, we'll need to paginate
+         route: GET /repos/Voya-Projects-Unit/${{ inputs.app-to-build }}/environments?per_page=100 # If we ever have >100 deployments, we'll need to paginate
         env:
           GITHUB_TOKEN: ${{ secrets.pat-token }}
       - name: Set output
